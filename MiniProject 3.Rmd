@@ -10,27 +10,25 @@ library(mdsr)
 library(RMySQL)
 ```
 
-# Just inner joining companyname and id of title table. Seeing if it works. 
-```{r}
-SELECT *
-FROM company_name
-JOIN title
-ON company_name.id = title.id
-WHERE country_code = '[us]';
-```
 
-#inner joining title and movie kind. Sequels. 
+Inner joining title and movie kind. Sequels.
 ```{r}
-SELECT DISTINCT title.id, movie_id, title, kind_id, link_type_id
+imdb_sequels <- dbConnect_scidb(dbname = "imdb")
+class(imdb_sequels)
+
+imdb_sequels %>%
+  dbGetQuery("SELECT DISTINCT title.id, movie_id, title, kind_id, link_type_id
 FROM imdb.title
 JOIN movie_link
 ON title.id = movie_link.movie_id
 WHERE (kind_id = '1') 
-AND (link_type_id = '1' OR link_type_id = '2'); 
+AND (link_type_id = '1' OR link_type_id = '2');")
+
 ```
 
 #Finding Remakes
 ```{r}
+imdb_
 SELECT DISTINCT title.id, movie_id, title, kind_id, link_type_id
 FROM imdb.title
 JOIN movie_link
