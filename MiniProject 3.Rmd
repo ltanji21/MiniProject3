@@ -8,6 +8,9 @@ output: html_document
 ```{r}
 library(mdsr)
 library(RMySQL)
+library(dplyr)
+library(ggplot2)
+library(data.table)
 ```
 
 
@@ -22,8 +25,17 @@ FROM imdb.title
 JOIN movie_link
 ON title.id = movie_link.movie_id
 WHERE (kind_id = '1') 
-AND (link_type_id = '1' OR link_type_id = '2');")
+AND (link_type_id = '1' OR link_type_id = '2')
+;")
 
+```
+
+```{r}
+imdb_sequels %>%
+  group_by(production_year, movie_id) %>%
+  select(title, production_year, link_type_id) %>%
+  arrange(desc(production_year))
+  
 ```
 
 #Finding Remakes
@@ -40,6 +52,14 @@ WHERE kind_id = 1
 AND (link_type_id = 3 OR link_type_id = 4);")
 ```
 
+```{r}
+imdb_remakes %>%
+  group_by(production_year, movie_id) %>%
+  select(title, production_year, link_type_id) %>%
+  arrange(desc(production_year))
+  
+```
+
 #Finding Reboots
 ```{r}
 imdb_reboots <- dbConnect_scidb(dbname = "imdb")
@@ -51,7 +71,7 @@ FROM imdb.title
 JOIN movie_link
 ON title.id = movie_link.movie_id
 WHERE (kind_id = '1') 
-AND (link_type_id = '1' OR link_type_id = '2');")
+AND (link_type_id = '13' OR link_type_id = '11' OR link_type_id = '12');")
  
 ```
 
