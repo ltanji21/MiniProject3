@@ -28,23 +28,31 @@ AND (link_type_id = '1' OR link_type_id = '2');")
 
 #Finding Remakes
 ```{r}
-imdb_
-SELECT DISTINCT title.id, movie_id, title, kind_id, link_type_id
+imdb_remakes <- dbConnect_scidb(dbname = "imdb")
+class(imdb_remakes)
+
+imdb_remakes %>%
+  dbGetQuery("SELECT DISTINCT title.id, movie_id, title, kind_id, link_type_id
 FROM imdb.title
 JOIN movie_link
 ON title.id = movie_link.movie_id
 WHERE kind_id = 1
-AND (link_type_id = 3 OR link_type_id = 4); 
+AND (link_type_id = 3 OR link_type_id = 4);")
 ```
 
 #Finding Reboots
 ```{r}
-SELECT DISTINCT title.id, movie_id, title, kind_id, link_type_id
+imdb_reboots <- dbConnect_scidb(dbname = "imdb")
+class(imdb_reboots)
+
+imdb_reboots %>%
+  dbGetQuery("SELECT DISTINCT title.id, movie_id, title, kind_id, link_type_id
 FROM imdb.title
 JOIN movie_link
 ON title.id = movie_link.movie_id
 WHERE (kind_id = '1') 
-AND (link_type_id = '1' OR link_type_id = '2'); 
+AND (link_type_id = '1' OR link_type_id = '2');")
+ 
 ```
 
 
