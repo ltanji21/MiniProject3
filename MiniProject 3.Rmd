@@ -13,7 +13,7 @@ library(ggplot2)
 ```
 
 
-Inner joining title and movie kind. Sequels.
+Inner joining title and movie kind, Sequels.
 ```{r}
 imdb_sequels <- dbConnect_scidb(dbname = "imdb")
 class(imdb_sequels)
@@ -29,6 +29,7 @@ AND (link_type_id = '1' OR link_type_id = '2')
 
 ```
 
+Cleaning up the data via dplyr. Got rid of duplicate rows, movie ids, kind ids, etc. Arranged by year. 
 ```{r}
 imdb_sequels <- imdb_sequels %>%
   group_by(production_year) %>%
