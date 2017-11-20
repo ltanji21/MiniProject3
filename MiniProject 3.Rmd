@@ -1,7 +1,7 @@
 ---
 title: "Mini Project 3"
 author: "Leigh Tanji and Samantha Bryce"
-date: "2017年11月15日"
+date: "2017年11???15日"
 output: html_document
 ---
 
@@ -29,18 +29,23 @@ AND (link_type_id = '1' OR link_type_id = '2')
 
 ```
 
-Cleaning up the data via dplyr. Got rid of duplicate rows, movie ids, kind ids, etc. Arranged by year. 
+Cleaning up the data via dplyr. Got rid of duplicate rows, movie ids, kind ids, etc. Arranged number of sequels per year.
 ```{r}
-imdb_sequels <- imdb_sequels %>%
+imdb_sequels_no <- imdb_sequels %>%
   group_by(production_year) %>%
   distinct(movie_id, .keep_all = TRUE) %>%
-  select(production_year, title, link_type_id) %>%
+  summarise(n_sequels = n()) %>%
+  select(production_year, n_sequels) %>%
   arrange(production_year)
 
-glimpse(imdb_sequels)
+imdb_sequels_no
+
+list2env(imdb_sequels_no, envir = .GlobalEnv)
 ```
 
+
 #Finding Remakes
+Going into SQL to sort out remakes by kind id. 
 ```{r}
 imdb_remakes <- dbConnect_scidb(dbname = "imdb")
 class(imdb_remakes)
@@ -54,17 +59,22 @@ WHERE kind_id = 1
 AND (link_type_id = 3 OR link_type_id = 4);")
 ```
 
+Sorting out number of remakes per year. 
 ```{r}
-imdb_remakes <- imdb_remakes%>%
+imdb_remakes_no <- imdb_remakes%>%
   group_by(production_year) %>%
   distinct(movie_id, .keep_all = TRUE) %>%
-  select(production_year, title, link_type_id) %>%
+  summarise(n_remakes = n()) %>%
+  select(production_year, n_remakes) %>%
   arrange(production_year)
 
-glimpse(imdb_remakes)
+imdb_remakes_no
+
+list2env(imdb_remakes_no, envir = .GlobalEnv)
 ```
 
 #Finding Reboots
+Going into SQL to sort out reboots by kind id.
 ```{r}
 imdb_reboots <- dbConnect_scidb(dbname = "imdb")
 class(imdb_reboots)
@@ -79,14 +89,17 @@ AND (link_type_id = '13' OR link_type_id = '11' OR link_type_id = '12');")
  
 ```
 
+Making a dataframe of reboots per year. 
 ```{r}
-imdb_reboots <- imdb_reboots %>%
+imdb_reboots_no <- imdb_reboots %>%
   group_by(production_year) %>%
   distinct(movie_id, .keep_all = TRUE) %>%
-  select(production_year, title, link_type_id) %>%
+  summarise(n_reboots = n()) %>%
+  select(production_year, n_reboots) %>%
   arrange(production_year)
 
-glimpse(imdb_reboots)
+imdb_reboots_no
+list2env(imdb_reboots_no, envir = .GlobalEnv)
 ```
 
 
