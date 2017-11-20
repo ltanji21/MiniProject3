@@ -102,6 +102,20 @@ imdb_reboots_no
 list2env(imdb_reboots_no, envir = .GlobalEnv)
 ```
 
+#Making a basic graph for reboots
+```{r}
+ggplot(imdb_sequels_no, aes(x = production_year, y = n_sequels)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of sequel films produced by year") + geom_line(alpha = .3) + geom_point(colour = "red", aes(x = 2011, y = 631)) + annotate("text", x = 2000, y = 645, label = "Harry Potter and The Deathly Hallows Part 2", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 259)) + annotate("text", x = 1942, y = 259, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,650) + xlim(1890,2017)
+```
+
+#Making a basic graph for remakes
+```{r}
+ggplot(imdb_remakes_no, aes(x = production_year, y = n_remakes)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of remake films produced by year") + geom_line(alpha = .3) + geom_point(colour = "red", aes(x = 2010, y = 179)) + annotate("text", x = 2000, y = 190, label = "The Karate Kid and The Last Airbender", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 71)) + annotate("text", x = 1915, y = 80, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,200) + xlim(1890,2017)
+```
+
+#Making a basic graph for reboots
+```{r}
+ggplot(imdb_reboots_no, aes(x = production_year, y = n_reboots)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of reboot films produced by year") + geom_line(alpha = .3)+ geom_point(colour = "blue", aes(x = 1927, y = 92)) + annotate("text", x = 1932, y = 80, label = "Sound is introduced", colour = "blue", size = 2.5) + geom_point(colour = "red", aes(x = 2013, y = 252)) + annotate("text", x = 2013, y = 265, label = "Frozen", colour = "red", size = 2.5) + xlim(1890,2017)
+```
 
 
 
