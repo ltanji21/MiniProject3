@@ -11,8 +11,35 @@ library(RMySQL)
 library(dplyr)
 library(ggplot2)
 ```
+#Global Movies
+Looking at all the movies produced globally. 
+```{r}
+imdb_movies <- dbConnect_scidb(dbname = "imdb")
+class(imdb_movies)
 
+imdb_movies <- imdb_movies %>%
+  dbGetQuery("SELECT DISTINCT title.id, movie_id, title, kind_id, production_year, link_type_id
+FROM imdb.title
+JOIN movie_link
+ON title.id = movie_link.movie_id
+WHERE kind_id = '1';")
+```
 
+Tidying up the table of movies produced globally. Looking at number of movies produced by year in the world. 
+```{r}
+imdb_movies_no <- imdb_movies %>%
+  group_by(production_year) %>%
+  distinct(movie_id, .keep_all = TRUE) %>%
+  summarise(n_movies = n()) %>%
+  select(production_year, n_movies) %>%
+  arrange(production_year)
+
+imdb_movies_no
+
+list2env(imdb_movies_no, envir = .GlobalEnv)
+  
+```
+#Finding Sequels
 Inner joining title and movie kind, Sequels.
 ```{r}
 imdb_sequels <- dbConnect_scidb(dbname = "imdb")
@@ -43,6 +70,15 @@ imdb_sequels_no
 list2env(imdb_sequels_no, envir = .GlobalEnv)
 ```
 
+Finding the proportion of sequels to number of total movies produced
+```{r}
+sequel_ratio <- imdb_movies_no %>%
+  inner_join(imdb_sequels_no, by = "production_year") %>%
+  mutate(ratio_sequels = n_sequels/n_movies)
+
+sequel_ratio
+list2env(sequel_ratio, envir = .GlobalEnv)
+```
 
 #Finding Remakes
 Going into SQL to sort out remakes by kind id. 
@@ -73,6 +109,16 @@ imdb_remakes_no
 list2env(imdb_remakes_no, envir = .GlobalEnv)
 ```
 
+Looking at proportion of movies produced globally to remakes produced
+```{r}
+remakes_ratio <- imdb_movies_no %>%
+  inner_join(imdb_remakes_no, by = "production_year") %>%
+  mutate(ratio_remakes = n_remakes/n_movies)
+
+remakes_ratio
+list2env(remakes_ratio, envir = .GlobalEnv)
+```
+
 #Finding Reboots
 Going into SQL to sort out reboots by kind id.
 ```{r}
@@ -100,6 +146,12 @@ imdb_reboots_no <- imdb_reboots %>%
 
 imdb_reboots_no
 list2env(imdb_reboots_no, envir = .GlobalEnv)
+```
+
+Looking at proportion of sequels to movies produced.
+```{r}
+imdb_reboots_ratio <- imdb_reboots_no 
+  
 ```
 
 **Understanding Sequels**
