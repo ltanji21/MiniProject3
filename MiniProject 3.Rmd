@@ -2,7 +2,9 @@
 title: "Mini Project 3"
 author: "Leigh Tanji and Samantha Bryce"
 date: "2017年11???15日"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 #Code before the written portion and figures
 ```{r}
@@ -162,22 +164,49 @@ First there is the question of what a sequel actually is? Merrian-Webster dictio
 
 So how do we begin to understand sequels? Using data from IMDb we began by filtering the data so that we only kept films classified as “sequels,” “remakes,” and “reboots.” We filtered to only include videos that IMDB classified as movies. While we contemplated filtering for films in English and/or films produced in the United States we ultimately decided not to. The rationale was that Hollywood is becoming increasingly global, and more and more extremely popular films are either not in English or were not produced in the United States. Examples include the Lord of the Ring series which was produced by New Zealand’s production company WingNutFilms[^4] and Blue is the Warmest Color (2013) which is in French.[^5] We also decided to exclude any data for films being released after this year (2017), due to the potential for this data to be incomplete.
 
-Here we explore sequels, reboots, and remakes individually to try and better understand any trends that emerge. First we have our data on the number of sequels produced by year. There is an overall positive trend with a sharp decline after sound is introduced. We hypothesize that this decline in the late 1920s is a result of the industry needing time to drastically adjust their production practices. There is also a major spike that peaks in 2011. 2011 was the year when Harry Potter, one of the longest series of films released in a relatively short period of time released its’ final film. It is likely that the industry noticed the massive success of these sequels, which encouraged them to produce their own sequel. After Harry Potter, we don’t see such massive hits, likely accounting for the decline in popularity.
+It is also important to note that we ultimately decided to omit reboots. While no documentation was available on the data, based on the inclusion of films like Frozen we were able to infer that the data did not encompass what contemporary film studies considers reboots. We reached this conclusion after discussing the matter with Dr. Alexandra Keller of the film studies department at Smith College.
+
+Here we explore sequels, and remakes individually to try and better understand any trends that emerge. First we have our data on the number of sequels produced by year. There is an overall positive trend with a sharp decline after sound is introduced. We hypothesize that this decline in the late 1920s is a result of the industry needing time to drastically adjust their production practices. Not only would production companies need to modify their practices but movie theaters would also need to make technological changes to accommodate these new movies. 
+
+We also see the beginning of an upward trend in the late 1970s. This seems to occur around the beginning of contemporary blockbuster films (which is marked by the release of Star Wars). Finally, this spike peaks in 2011. 2011 was the year when Harry Potter, one of the longest series of films released in a relatively short period of time released its’ final film. It is likely that the industry noticed the massive success of these sequels, which encouraged them to produce their own sequel. After Harry Potter, we don’t see such massive hits, likely accounting for the decline in popularity.
+
+
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
-ggplot(imdb_sequels_no, aes(x = production_year, y = n_sequels)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of sequel films produced by year") + geom_line(alpha = .3) + geom_point(colour = "red", aes(x = 2011, y = 631)) + annotate("text", x = 1990, y = 650, label = "Harry Potter and The Deathly Hallows Part 2", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 259)) + annotate("text", x = 1942, y = 259, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,650) + xlim(1890,2017)
+ggplot(imdb_sequels_no, aes(x = production_year, y = n_sequels)) + geom_point(alpha = .3) + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of sequel films produced by year") + geom_line() + geom_point(colour = "red", aes(x = 2011, y = 631)) + annotate("text", x = 1990, y = 650, label = "Harry Potter and The Deathly Hallows Part 2", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 259)) + annotate("text", x = 1942, y = 259, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,650) + xlim(1890,2017) + geom_point(colour = "purple", aes(x = 1977, y = 184)) + annotate("text", x = 1977, y = 170, label = "Beginning of contemporary blockbuster films", colour = "purple", size = 2.5)
 ```
 Figure 1: The number of sequel films produced each year between 1890 and 2017
 
+Overall there has been an increase in movie production over time so it is important to not just look at the number of sequels being produced but also the percentage of films that are sequels. When we look at the percentage of films that are sequels there is less of a clear trend. Overall, sequels were more being produced proportionally more before the introduction of sound and there tends to be a spike in the 1920s. The 1920s saw the introduction of individuals who were classified as “movie stars.”[^6] It is possible that this new emphasis on individual actors helps to encourage this boom in sequels because it would ensure that viewer continued to have access to films with their favorite cast members. Like with the number of films, we see a sharp decline when sound is introduced, again this is likely a result of needing time to adapt to changes in technology. Finally, the beginning of the contemporary blockbuster appears to act as the starting point for a trend of a higher percentage of sequels being produced/
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
-ggplot(imdb_remakes_no, aes(x = production_year, y = n_remakes)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of remake films produced by year") + geom_line(alpha = .3) + geom_point(colour = "red", aes(x = 2010, y = 179)) + annotate("text", x = 2010, y = 190, label = "The Last Airbender", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 71)) + annotate("text", x = 1915, y = 80, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,200) + xlim(1890,2017)
+ggplot(sequel_ratio, aes(x = production_year, y = ratio_sequels)) + geom_point(alpha = .3) + ylab("Percentage of films that are sequels") + xlab("Production Year") + ggtitle("Percentage of films released by year that are sequels") + geom_line() + geom_point(colour = "blue", aes(x = 1927, y = 0.47874307)) + annotate("text", x = 1942, y = 0.47874307, label = "Sound is introduced", colour = "blue", size = 2.5) + xlim(1890,2017) + scale_y_continuous(labels = scales::percent) + geom_point(colour = "purple", aes(x = 1977, y = 0.20399113)) + annotate("text", x = 1990, y = 0.17, label = "Beginning of contemporary blockbuster films", colour = "purple", size = 2.5)
 ```
+Figure 2: The percentage of films released that were sequels between 1890 and 2017
 
+Next we have our data on remake films. Unlike with our sequel data, we do not see a decline in production following the introduction of sound. Interestingly, no films stand out that would account for the spike in the early 2000s. However, we see remakes that were commercial failures and snuffed by reviewers[^7] in the 2010s, which may account for the fluctuation seen at this time. Unlike with the larger sequel data, there is actually an increase in the number of remake films almost immediately after sound is introduced. While it is can not be determined with certainty, we hypothesize that this is a limitation of the small data and does not reflect the film history in general.
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
-ggplot(imdb_reboots_no, aes(x = production_year, y = n_reboots)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of reboot films produced by year") + geom_line(alpha = .3)+ geom_point(colour = "blue", aes(x = 1927, y = 92)) + annotate("text", x = 1932, y = 80, label = "Sound is introduced", colour = "blue", size = 2.5) + geom_point(colour = "red", aes(x = 2013, y = 252)) + annotate("text", x = 2013, y = 265, label = "Frozen", colour = "red", size = 2.5) + xlim(1890,2017)
+ggplot(imdb_remakes_no, aes(x = production_year, y = n_remakes)) + geom_point(alpha = .3) + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of remake films produced by year") + geom_line() + geom_point(colour = "red", aes(x = 2010, y = 179)) + annotate("text", x = 2010, y = 190, label = "The Last Airbender", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 71)) + annotate("text", x = 1915, y = 80, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,200) + xlim(1890,2017) + geom_point(colour = "purple", aes(x = 1977, y = 96)) + annotate("text", x = 1977, y = 70, label = "Beginning of contemporary blockbuster films", colour = "purple", size = 2.5)
 ```
+Figure 3: The number of remakes films produced each year between 1890 and 2017
+
+Finally, we have our percentage of films released that were remakes. Again we see trends that are somewhat counterintuitive, such as the same spike around when sound is introduced. Again we hypothesize that this is a result of the small data set.
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+ggplot(remakes_ratio, aes(x = production_year, y = ratio_remakes)) + geom_point(alpha = .3) + ylab("Percentage of films that are remakes") + xlab("Production Year") + ggtitle("Percentage of films released by year that are remakes") + geom_line() + geom_point(colour = "blue", aes(x = 1927, y = 0.13123845)) + annotate("text", x = 1927, y = 0.14, label = "Sound is introduced", colour = "blue", size = 2.5) + xlim(1890,2017) + scale_y_continuous(labels = scales::percent) + geom_point(colour = "purple", aes(x = 1977, y = 0.10643016)) + annotate("text", x = 1990, y = 0.12, label = "Beginning of contemporary blockbuster films", colour = "purple", size = 2.5)
+```
+Figure 4: The percentage of films released that were remakes between 1890 and 2017
+
+So what does all of this data tell us? While the number of sequels and remakes being produced are higher now than they have been in the past (Figures 1 and 3), these types of films are no longer the most popular. If we look at the percentage of films (Figures 2 and 4), we see that sequels and remakes were most abundant before 1950 and our larger data set (sequels) suggests that they were most popular in the 1920s.
+
+
+[^1]:https://www.merriam-webster.com/dictionary/sequel
+[^2]:http://www.imdb.com/list/ls006131736/
+[^3]:http://www.nytimes.com/2013/11/27/movies/disneys-frozen-a-makeover-of-the-snow-queen.html
+[^4]:https://en.wikipedia.org/wiki/WingNut_Films
+[^5]:http://www.imdb.com/title/tt2278871/
+[^6]:https://www.theatlantic.com/entertainment/archive/2010/07/-hopefully-the-last-airbender/59052/
 
 
 
