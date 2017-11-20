@@ -4,7 +4,7 @@ author: "Leigh Tanji and Samantha Bryce"
 date: "2017年11???15日"
 output: html_document
 ---
-
+#Code before the written portion and figures
 ```{r}
 library(mdsr)
 library(RMySQL)
@@ -102,18 +102,28 @@ imdb_reboots_no
 list2env(imdb_reboots_no, envir = .GlobalEnv)
 ```
 
-#Making a basic graph for reboots
-```{r}
-ggplot(imdb_sequels_no, aes(x = production_year, y = n_sequels)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of sequel films produced by year") + geom_line(alpha = .3) + geom_point(colour = "red", aes(x = 2011, y = 631)) + annotate("text", x = 2000, y = 645, label = "Harry Potter and The Deathly Hallows Part 2", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 259)) + annotate("text", x = 1942, y = 259, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,650) + xlim(1890,2017)
+**Understanding Sequels**
+
+Sequels have long been a part of Hollywood’s movie history. However, the prevalence and abundance of sequels has not always been equal. Using data from the Internet Movie Database (IMDb) we examine how sequels have changed in the past ~100 years.
+
+First there is the question of what a sequel actually is? Merrian-Webster dictionary defines a sequel as “the next installment (as of a speech or story); especially :a literary, cinematic, or televised work continuing the course of a story begun in a preceding one.” [^1] But this definition doesn’t quite align with how IMDb sees things. On their website IMDb lumps together prequels, sequels, remakes, reboots, and spin-offs, never offering concrete definitions for each. [^2] This is particularly important because the IMDb data includes unexpected movies in these categories, such as Frozen (2013) being classified as a remake. While Frozen is loosely based on “The Snow Queen” by Hans Christian Anderson[^3], it hardly a reboot under most contemporary standards.
+
+So how do we begin to understand sequels? Using data from IMDb we began by filtering the data so that we only kept films classified as “sequels,” “remakes,” and “reboots.” We filtered to only include videos that IMDB classified as movies. While we contemplated filtering for films in English and/or films produced in the United States we ultimately decided not to. The rationale was that Hollywood is becoming increasingly global, and more and more extremely popular films are either not in English or were not produced in the United States. Examples include the Lord of the Ring series which was produced by New Zealand’s production company WingNutFilms[^4] and Blue is the Warmest Color (2013) which is in French.[^5] We also decided to exclude any data for films being released after this year (2017), due to the potential for this data to be incomplete.
+
+Here we explore sequels, reboots, and remakes individually to try and better understand any trends that emerge. First we have our data on the number of sequels produced by year. There is an overall positive trend with a sharp decline after sound is introduced. We hypothesize that this decline in the late 1920s is a result of the industry needing time to drastically adjust their production practices. There is also a major spike that peaks in 2011. 2011 was the year when Harry Potter, one of the longest series of films released in a relatively short period of time released its’ final film. It is likely that the industry noticed the massive success of these sequels, which encouraged them to produce their own sequel. After Harry Potter, we don’t see such massive hits, likely accounting for the decline in popularity.
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+ggplot(imdb_sequels_no, aes(x = production_year, y = n_sequels)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of sequel films produced by year") + geom_line(alpha = .3) + geom_point(colour = "red", aes(x = 2011, y = 631)) + annotate("text", x = 1990, y = 650, label = "Harry Potter and The Deathly Hallows Part 2", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 259)) + annotate("text", x = 1942, y = 259, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,650) + xlim(1890,2017)
+```
+Figure 1: The number of sequel films produced each year between 1890 and 2017
+
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+ggplot(imdb_remakes_no, aes(x = production_year, y = n_remakes)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of remake films produced by year") + geom_line(alpha = .3) + geom_point(colour = "red", aes(x = 2010, y = 179)) + annotate("text", x = 2010, y = 190, label = "The Last Airbender", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 71)) + annotate("text", x = 1915, y = 80, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,200) + xlim(1890,2017)
 ```
 
-#Making a basic graph for remakes
-```{r}
-ggplot(imdb_remakes_no, aes(x = production_year, y = n_remakes)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of remake films produced by year") + geom_line(alpha = .3) + geom_point(colour = "red", aes(x = 2010, y = 179)) + annotate("text", x = 2000, y = 190, label = "The Karate Kid and The Last Airbender", colour = "red", size = 2.5) + geom_point(colour = "blue", aes(x = 1927, y = 71)) + annotate("text", x = 1915, y = 80, label = "Sound is introduced", colour = "blue", size = 2.5) + ylim(0,200) + xlim(1890,2017)
-```
 
-#Making a basic graph for reboots
-```{r}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 ggplot(imdb_reboots_no, aes(x = production_year, y = n_reboots)) + geom_point() + ylab("Number of films") + xlab("Production Year") + ggtitle("Number of reboot films produced by year") + geom_line(alpha = .3)+ geom_point(colour = "blue", aes(x = 1927, y = 92)) + annotate("text", x = 1932, y = 80, label = "Sound is introduced", colour = "blue", size = 2.5) + geom_point(colour = "red", aes(x = 2013, y = 252)) + annotate("text", x = 2013, y = 265, label = "Frozen", colour = "red", size = 2.5) + xlim(1890,2017)
 ```
 
