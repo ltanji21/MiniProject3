@@ -1,21 +1,23 @@
 ---
 title: "Mini Project 3"
 author: "Leigh Tanji and Samantha Bryce"
-date: "2017年11???15日"
+date: "2017, 11/15"
 output:
   html_document: default
   pdf_document: default
 ---
-#Code before the written portion and figures
+#Loading libraries
 ```{r}
-library(mdsr)
-library(RMySQL)
-library(dplyr)
-library(ggplot2)
+suppressMessages(library(mdsr))
+suppressMessages(library(RMySQL))
+suppressMessages(library(dplyr))
+suppressMessages(library(ggplot2))
+
 ```
+
 #Global Movies
 Looking at all the movies produced globally. 
-```{r}
+```{r, message=FALSE, echo=FALSE}
 imdb_movies <- dbConnect_scidb(dbname = "imdb")
 class(imdb_movies)
 
@@ -28,7 +30,7 @@ WHERE kind_id = '1';")
 ```
 
 Tidying up the table of movies produced globally. Looking at number of movies produced by year in the world. 
-```{r}
+```{r, message=FALSE, echo=FALSE}
 imdb_movies_no <- imdb_movies %>%
   group_by(production_year) %>%
   distinct(movie_id, .keep_all = TRUE) %>%
@@ -43,7 +45,7 @@ list2env(imdb_movies_no, envir = .GlobalEnv)
 ```
 #Finding Sequels
 Inner joining title and movie kind, Sequels.
-```{r}
+```{r, message=FALSE, echo=FALSE}
 imdb_sequels <- dbConnect_scidb(dbname = "imdb")
 class(imdb_sequels)
 
@@ -59,7 +61,7 @@ AND (link_type_id = '1' OR link_type_id = '2')
 ```
 
 Cleaning up the data via dplyr. Got rid of duplicate rows, movie ids, kind ids, etc. Arranged number of sequels per year.
-```{r}
+```{r, message=FALSE, echo=FALSE}
 imdb_sequels_no <- imdb_sequels %>%
   group_by(production_year) %>%
   distinct(movie_id, .keep_all = TRUE) %>%
@@ -73,7 +75,7 @@ list2env(imdb_sequels_no, envir = .GlobalEnv)
 ```
 
 Finding the proportion of sequels to number of total movies produced
-```{r}
+```{r, message=FALSE, echo=FALSE}
 sequel_ratio <- imdb_movies_no %>%
   inner_join(imdb_sequels_no, by = "production_year") %>%
   mutate(ratio_sequels = n_sequels/n_movies)
@@ -84,7 +86,7 @@ list2env(sequel_ratio, envir = .GlobalEnv)
 
 #Finding Remakes
 Going into SQL to sort out remakes by kind id. 
-```{r}
+```{r, message=FALSE, echo=FALSE}
 imdb_remakes <- dbConnect_scidb(dbname = "imdb")
 class(imdb_remakes)
 
@@ -98,7 +100,7 @@ AND (link_type_id = 3 OR link_type_id = 4);")
 ```
 
 Sorting out number of remakes per year. 
-```{r}
+```{r, message=FALSE, echo=FALSE}
 imdb_remakes_no <- imdb_remakes%>%
   group_by(production_year) %>%
   distinct(movie_id, .keep_all = TRUE) %>%
@@ -112,7 +114,7 @@ list2env(imdb_remakes_no, envir = .GlobalEnv)
 ```
 
 Looking at proportion of movies produced globally to remakes produced
-```{r}
+```{r, message=FALSE, echo=FALSE}
 remakes_ratio <- imdb_movies_no %>%
   inner_join(imdb_remakes_no, by = "production_year") %>%
   mutate(ratio_remakes = n_remakes/n_movies)
@@ -123,7 +125,7 @@ list2env(remakes_ratio, envir = .GlobalEnv)
 
 #Finding Reboots
 Going into SQL to sort out reboots by kind id.
-```{r}
+```{r, message=FALSE, echo=FALSE}
 imdb_reboots <- dbConnect_scidb(dbname = "imdb")
 class(imdb_reboots)
 
@@ -138,7 +140,7 @@ AND (link_type_id = '13' OR link_type_id = '11' OR link_type_id = '12');")
 ```
 
 Making a dataframe of reboots per year. 
-```{r}
+```{r, message=FALSE, echo=FALSE}
 imdb_reboots_no <- imdb_reboots %>%
   group_by(production_year) %>%
   distinct(movie_id, .keep_all = TRUE) %>%
@@ -151,11 +153,13 @@ list2env(imdb_reboots_no, envir = .GlobalEnv)
 ```
 
 Looking at proportion of sequels to movies produced.
-```{r}
+```{r, message=FALSE, echo=FALSE}
 imdb_reboots_ratio <- imdb_reboots_no 
   
 ```
 
+
+#Explaining The Data
 **Understanding Sequels**
 
 Sequels have long been a part of Hollywood’s movie history. However, the prevalence and abundance of sequels has not always been equal. Using data from the Internet Movie Database (IMDb) we examine how sequels have changed in the past ~100 years.
